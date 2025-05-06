@@ -1,0 +1,85 @@
+@page "/leetcode-problem/{Id}"
+@using LeetCodeDaily.Core.Models
+@using LeetCodeDaily.Core.Services
+@inject LeetCodeService LeetCodeService
+@inject NavigationManager NavigationManager
+
+<PageTitle>@(problem?.Title ?? "Problem Details")</PageTitle>
+
+<div class="container mt-4">
+    @if (problem != null)
+    {
+        <div class="card">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h1 class="card-title">@problem.QuestionFrontendId. @problem.Title</h1>
+                    <span class="badge @GetDifficultyBadgeClass(problem.Difficulty)">@problem.Difficulty</span>
+                </div>
+
+                @if (!string.IsNullOrEmpty(problem.TranslatedTitle))
+                {
+                    <h5 class="card-subtitle mb-3 text-muted">@problem.TranslatedTitle</h5>
+                }
+
+                <div class="mb-4">
+                    <h6>Topics:</h6>
+                    <div>
+                        @foreach (var tag in problem.TopicTags)
+                        {
+                            <span class="badge bg-secondary me-1">@tag.Name</span>
+                        }
+                    </div>
+                </div>
+
+                <div class="row mb-4">
+                    <div class="col-md-4">
+                        <div class="card bg-light">
+                            <div class="card-body">
+                                <h6 class="card-title">Statistics</h6>
+                                <p class="card-text">
+                                    <strong>Acceptance Rate:</strong> @(problem.AcRate.ToString("P2"))<br />
+                                    <strong>Frequency:</strong> @(problem.Frequency.ToString("P2"))<br />
+                                    <strong>Status:</strong> @problem.Status
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="leetcode-problems" class="btn btn-secondary">Back to List</a>
+                    <a href="@($"https://leetcode.com/problems/{problem.TitleSlug}")" target="_blank" class="btn btn-primary">
+                        View on LeetCode
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="alert alert-warning">
+            Problem not found.
+            <a href="leetcode-problems" class="alert-link">Return to problem list</a>
+        </div>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = string.Empty;
+
+    private LeetCodeProblem? problem;
+
+    protected override void OnInitialized()
+    {
+        problem = LeetCodeService.GetProblemById(Id);
+    }
+
+    private string GetDifficultyBadgeClass(string difficulty) => difficulty.ToLower() switch
+    {
+        "easy" => "bg-success",
+        "medium" => "bg-warning",
+        "hard" => "bg-danger",
+        _ => "bg-secondary"
+    };
+} 

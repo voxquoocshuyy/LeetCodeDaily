@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "iWrEIokepbg=",
+  "success": true,
+  "projectFilePath": "D:\\source\\Daily\\LeetCodeDaily.Web\\LeetCodeDaily.Web.csproj",
+  "expectedPackageFiles": [
+    "D:\\NuGetPackages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512"
+  ],
+  "logs": []
+}

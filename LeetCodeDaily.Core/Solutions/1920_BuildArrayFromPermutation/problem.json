@@ -1,0 +1,25 @@
+{
+    "Id": "1920",
+    "TitleSlug": "build-array-from-permutation",
+    "Title": "Build Array from Permutation",
+    "TranslatedTitle": "Xây dựng mảng từ hoán vị",
+    "QuestionFrontendId": "1920",
+    "PaidOnly": false,
+    "Difficulty": "Easy",
+    "TopicTags": [
+        {
+            "Name": "Array",
+            "Slug": "array",
+            "NameTranslated": "Mảng"
+        },
+        {
+            "Name": "Simulation",
+            "Slug": "simulation",
+            "NameTranslated": "Mô phỏng"
+        }
+    ],
+    "Status": "solved",
+    "IsInMyFavorites": false,
+    "AcRate": 0.85,
+    "Frequency": 0.1
+} 
