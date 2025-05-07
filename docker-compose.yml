@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  leetcodedaily:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    volumes:
+      - ./Solutions:/app/Solutions
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+    restart: unless-stopped 
