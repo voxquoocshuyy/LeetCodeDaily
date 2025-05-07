@@ -11,13 +11,30 @@
         </div>
 
         <article class="content px-4">
-            @Body
+            <ErrorBoundary>
+                <ChildContent>
+                    @Body
+                </ChildContent>
+                <ErrorContent Context="exception">
+                    <div class="alert alert-danger" role="alert">
+                        <h4 class="alert-heading">Error</h4>
+                        <p>Sorry, an error has occurred while processing your request.</p>
+                        <hr>
+                        @if (exception != null)
+                        {
+                            <p class="mb-0">@exception.Message</p>
+                        }
+                        <button class="btn btn-primary mt-3" @onclick="@(() => NavigationManager.NavigateTo(NavigationManager.Uri, true))">
+                            Reload Page
+                        </button>
+                    </div>
+                </ErrorContent>
+            </ErrorBoundary>
         </article>
     </main>
 </div>
 
-<div id="blazor-error-ui" data-nosnippet>
-    An unhandled error has occurred.
-    <a href="." class="reload">Reload</a>
-    <span class="dismiss">🗙</span>
-</div>
+@code {
+    [Inject]
+    private NavigationManager NavigationManager { get; set; } = default!;
+}

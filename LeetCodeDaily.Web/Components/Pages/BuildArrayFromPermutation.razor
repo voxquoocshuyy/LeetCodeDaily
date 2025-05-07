@@ -1,137 +1,105 @@
-@page "/build-array-from-permutation"
-@using LeetCodeDaily.Core.Solutions._1920_BuildArrayFromPermutation
+@page "/problems/build-array-from-permutation"
+@using LeetCodeDaily.Web.Models
+@using LeetCodeDaily.Web.Services
+@inject LeetCodeService LeetCodeService
 
 <PageTitle>Build Array from Permutation</PageTitle>
 
 <div class="container mt-4">
-    <h1>Build Array from Permutation</h1>
-    
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Problem Description</h5>
-            <p class="card-text">
-                Given a zero-based permutation nums (0-indexed), build an array ans of the same length where ans[i] = nums[nums[i]] for each 0 &lt;= i &lt; nums.length and return it.
-            </p>
+    @if (problem == null)
+    {
+        <div class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
         </div>
-    </div>
+    }
+    else
+    {
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h3 class="mb-0">@problem.Title</h3>
+                <span class="badge @GetDifficultyBadgeClass()">@problem.Difficulty</span>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <h5>Description</h5>
+                    <div class="problem-description">
+                        @((MarkupString)problem.Description)
+                    </div>
+                </div>
 
-    <div class="row">
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Input Array</h5>
-                    <div class="input-group mb-3">
-                        <input type="text" class="form-control" @bind="inputArray" placeholder="Enter numbers separated by commas (e.g., 0,2,1,5,3,4)" />
-                        <button class="btn btn-primary" @onclick="ProcessArray">Process</button>
+                @if (!string.IsNullOrEmpty(problem.Example))
+                {
+                    <div class="mb-4">
+                        <h5>Example</h5>
+                        <pre class="bg-light p-3 rounded"><code>@problem.Example</code></pre>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(problem.Constraints))
+                {
+                    <div class="mb-4">
+                        <h5>Constraints</h5>
+                        <pre class="bg-light p-3 rounded"><code>@problem.Constraints</code></pre>
+                    </div>
+                }
+
+                <div class="mb-4">
+                    <h5>Solution</h5>
+                    <pre class="bg-light p-3 rounded"><code>@problem.Solution</code></pre>
+                </div>
+
+                <div class="mb-4">
+                    <h5>Explanation</h5>
+                    <div class="explanation">
+                        @((MarkupString)problem.Explanation)
                     </div>
                 </div>
             </div>
         </div>
-        
-        <div class="col-md-6">
-            <div class="card">
-                <div class="card-body">
-                    <h5 class="card-title">Result</h5>
-                    @if (inputNumbers != null && result != null && inputNumbers.Length > 0 && result.Length > 0)
-                    {
-                        <div class="result-container">
-                            <div class="input-array mb-3">
-                                <h6>Input: [@string.Join(", ", inputNumbers)]</h6>
-                            </div>
-                            <div class="output-array">
-                                <h6>Output: [@string.Join(", ", result)]</h6>
-                            </div>
-                            <div class="visualization mt-4">
-                                <h6>Visualization:</h6>
-                                <div class="array-visualization">
-                                    @for (int i = 0; i < inputNumbers.Length; i++)
-                                    {
-                                        <div class="array-element">
-                                            <div class="element-value">@inputNumbers[i]</div>
-                                            <div class="element-index">@i</div>
-                                        </div>
-                                    }
-                                </div>
-                                <div class="arrow-down mt-2 mb-2">↓</div>
-                                <div class="array-visualization">
-                                    @for (int i = 0; i < result.Length; i++)
-                                    {
-                                        <div class="array-element">
-                                            <div class="element-value">@result[i]</div>
-                                            <div class="element-index">@i</div>
-                                        </div>
-                                    }
-                                </div>
-                            </div>
-                        </div>
-                    }
-                </div>
-            </div>
-        </div>
-    </div>
+    }
 </div>
 
 <style>
-    .array-visualization {
-        display: flex;
-        gap: 10px;
-        justify-content: center;
-        margin: 10px 0;
+    .problem-description {
+        white-space: pre-wrap;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
     }
 
-    .array-element {
-        border: 2px solid #007bff;
-        border-radius: 5px;
-        padding: 10px;
-        min-width: 50px;
-        text-align: center;
-        background-color: #f8f9fa;
+    .explanation {
+        white-space: pre-wrap;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
     }
 
-    .element-value {
-        font-weight: bold;
-        font-size: 1.2em;
+    pre {
+        margin: 0;
+        white-space: pre-wrap;
     }
 
-    .element-index {
-        font-size: 0.8em;
-        color: #6c757d;
-    }
-
-    .arrow-down {
-        text-align: center;
-        font-size: 1.5em;
-        color: #28a745;
-    }
-
-    .result-container {
-        padding: 15px;
-        background-color: #f8f9fa;
-        border-radius: 5px;
+    code {
+        font-family: 'Consolas', 'Courier New', monospace;
     }
 </style>
 
 @code {
-    private string inputArray = "";
-    private int[] inputNumbers = Array.Empty<int>();
-    private int[] result = Array.Empty<int>();
-    private Solution solution = new Solution();
+    private LeetCodeProblem? problem;
 
-    private void ProcessArray()
+    protected override async Task OnInitializedAsync()
     {
-        try
+        problem = await LeetCodeService.GetProblemByTitleSlugAsync("build-array-from-permutation");
+    }
+
+    private string GetDifficultyBadgeClass()
+    {
+        return problem?.Difficulty?.ToLower() switch
         {
-            inputNumbers = inputArray.Split(',')
-                                   .Select(x => int.Parse(x.Trim()))
-                                   .ToArray();
-            result = solution.BuildArray(inputNumbers);
-        }
-        catch (Exception ex)
-        {
-            // In a real application, you might want to show this error to the user
-            Console.WriteLine($"Error processing array: {ex.Message}");
-            inputNumbers = Array.Empty<int>();
-            result = Array.Empty<int>();
-        }
+            "easy" => "bg-success",
+            "medium" => "bg-warning",
+            "hard" => "bg-danger",
+            _ => "bg-secondary"
+        };
     }
 } 

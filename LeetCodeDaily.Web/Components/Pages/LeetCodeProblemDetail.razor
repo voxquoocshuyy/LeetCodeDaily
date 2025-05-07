@@ -1,53 +1,133 @@
-@page "/leetcode-problem/{Id}"
-@using LeetCodeDaily.Core.Models
-@using LeetCodeDaily.Core.Services
+@page "/problems/{TitleSlug}"
+@using LeetCodeDaily.Web.Models
+@using LeetCodeDaily.Web.Services
 @inject LeetCodeService LeetCodeService
-@inject NavigationManager NavigationManager
+@inject ILogger<LeetCodeProblemDetail> Logger
 
 <PageTitle>@(problem?.Title ?? "Problem Details")</PageTitle>
 
 <div class="container mt-4">
-    @if (problem != null)
+    @if (_isLoading)
+    {
+        <div class="d-flex justify-content-center">
+            <div class="spinner-border" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        </div>
+    }
+    else if (_error != null)
+    {
+        <div class="alert alert-danger" role="alert">
+            <h4 class="alert-heading">Error!</h4>
+            <p>@_error</p>
+            <hr>
+            <button class="btn btn-primary" @onclick="LoadProblemAsync">Try Again</button>
+        </div>
+    }
+    else if (problem == null)
+    {
+        <div class="alert alert-warning" role="alert">
+            <h4 class="alert-heading">Problem Not Found</h4>
+            <p>The requested problem could not be found.</p>
+            <hr>
+            <a href="/leetcode-problems" class="btn btn-primary">Back to Problems</a>
+        </div>
+    }
+    else
     {
         <div class="card">
-            <div class="card-body">
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h1 class="card-title">@problem.QuestionFrontendId. @problem.Title</h1>
-                    <span class="badge @GetDifficultyBadgeClass(problem.Difficulty)">@problem.Difficulty</span>
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <div>
+                    <h3 class="mb-0">@problem.QuestionFrontendId. @problem.Title</h3>
+                    @if (!string.IsNullOrEmpty(problem.TranslatedTitle))
+                    {
+                        <h5 class="text-muted">@problem.TranslatedTitle</h5>
+                    }
                 </div>
-
-                @if (!string.IsNullOrEmpty(problem.TranslatedTitle))
+                <span class="badge bg-@GetDifficultyColor(problem.Difficulty)">@problem.Difficulty</span>
+            </div>
+            <div class="card-body">
+                @if (problem.TopicTags.Any())
                 {
-                    <h5 class="card-subtitle mb-3 text-muted">@problem.TranslatedTitle</h5>
+                    <div class="mb-4">
+                        <h6>Topics:</h6>
+                        <div>
+                            @foreach (var tag in problem.TopicTags)
+                            {
+                                <span class="badge bg-secondary me-1">@tag.Name</span>
+                            }
+                        </div>
+                    </div>
                 }
 
                 <div class="mb-4">
-                    <h6>Topics:</h6>
-                    <div>
-                        @foreach (var tag in problem.TopicTags)
-                        {
-                            <span class="badge bg-secondary me-1">@tag.Name</span>
-                        }
+                    <h5>Description</h5>
+                    <div class="problem-description">
+                        @((MarkupString)problem.Description)
                     </div>
                 </div>
 
-                <div class="row mb-4">
-                    <div class="col-md-4">
-                        <div class="card bg-light">
-                            <div class="card-body">
-                                <h6 class="card-title">Statistics</h6>
-                                <p class="card-text">
-                                    <strong>Acceptance Rate:</strong> @(problem.AcRate.ToString("P2"))<br />
-                                    <strong>Frequency:</strong> @(problem.Frequency.ToString("P2"))<br />
-                                    <strong>Status:</strong> @problem.Status
-                                </p>
-                            </div>
+                @if (!string.IsNullOrEmpty(problem.Example))
+                {
+                    <div class="mb-4">
+                        <h5>Examples</h5>
+                        <div class="example-container">
+                            @foreach (var example in problem.Example.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+                            {
+                                if (example.StartsWith("Example"))
+                                {
+                                    <div class="example-header">
+                                        <h6>@example</h6>
+                                    </div>
+                                }
+                                else if (example.StartsWith("Input:"))
+                                {
+                                    <div class="example-input">
+                                        <h6>Input:</h6>
+                                        <pre class="bg-light p-3 rounded"><code>@example.Replace("Input:", "").Trim()</code></pre>
+                                    </div>
+                                }
+                                else if (example.StartsWith("Output:"))
+                                {
+                                    <div class="example-output">
+                                        <h6>Output:</h6>
+                                        <pre class="bg-light p-3 rounded"><code>@example.Replace("Output:", "").Trim()</code></pre>
+                                    </div>
+                                }
+                                else if (example.StartsWith("Explanation:"))
+                                {
+                                    <div class="example-explanation">
+                                        <h6>Explanation:</h6>
+                                        <p>@example.Replace("Explanation:", "").Trim()</p>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <pre class="bg-light p-3 rounded"><code>@example</code></pre>
+                                }
+                            }
                         </div>
                     </div>
-                </div>
+                }
 
-                <div class="d-flex justify-content-between">
-                    <a href="leetcode-problems" class="btn btn-secondary">Back to List</a>
+                @if (!string.IsNullOrEmpty(problem.Constraints))
+                {
+                    <div class="mb-4">
+                        <h5>Constraints</h5>
+                        <div class="constraints-container">
+                            @foreach (var constraint in problem.Constraints.Split('\n', StringSplitOptions.RemoveEmptyEntries))
+                            {
+                                <div class="constraint-item">
+                                    <i class="bi bi-check-circle-fill text-success me-2"></i>
+                                    <span>@constraint.Trim()</span>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="/leetcode-problems" class="btn btn-secondary">Back to List</a>
                     <a href="@($"https://leetcode.com/problems/{problem.TitleSlug}")" target="_blank" class="btn btn-primary">
                         View on LeetCode
                     </a>
@@ -55,31 +135,98 @@
             </div>
         </div>
     }
-    else
-    {
-        <div class="alert alert-warning">
-            Problem not found.
-            <a href="leetcode-problems" class="alert-link">Return to problem list</a>
-        </div>
-    }
 </div>
+
+<style>
+    .problem-description {
+        white-space: pre-wrap;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+    }
+
+    .explanation {
+        white-space: pre-wrap;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        line-height: 1.6;
+    }
+
+    pre {
+        margin: 0;
+        white-space: pre-wrap;
+    }
+
+    code {
+        font-family: 'Consolas', 'Courier New', monospace;
+    }
+
+    .example-container {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .example-header {
+        margin-bottom: 0.5rem;
+    }
+
+    .example-input, .example-output, .example-explanation {
+        background-color: #f8f9fa;
+        border-radius: 0.5rem;
+        padding: 1rem;
+    }
+
+    .constraints-container {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    .constraint-item {
+        display: flex;
+        align-items: center;
+        padding: 0.5rem;
+        background-color: #f8f9fa;
+        border-radius: 0.25rem;
+    }
+</style>
 
 @code {
     [Parameter]
-    public string Id { get; set; } = string.Empty;
+    public string TitleSlug { get; set; } = string.Empty;
 
     private LeetCodeProblem? problem;
+    private bool _isLoading = true;
+    private string? _error;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        problem = LeetCodeService.GetProblemById(Id);
+        await LoadProblemAsync();
     }
 
-    private string GetDifficultyBadgeClass(string difficulty) => difficulty.ToLower() switch
+    private async Task LoadProblemAsync()
     {
-        "easy" => "bg-success",
-        "medium" => "bg-warning",
-        "hard" => "bg-danger",
-        _ => "bg-secondary"
+        try
+        {
+            _isLoading = true;
+            _error = null;
+            problem = await LeetCodeService.GetProblemByTitleSlugAsync(TitleSlug);
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error loading problem {TitleSlug}", TitleSlug);
+            _error = "An error occurred while loading the problem. Please try again.";
+        }
+        finally
+        {
+            _isLoading = false;
+        }
+    }
+
+    private string GetDifficultyColor(string difficulty) => difficulty.ToLower() switch
+    {
+        "easy" => "success",
+        "medium" => "warning",
+        "hard" => "danger",
+        _ => "secondary"
     };
 } 

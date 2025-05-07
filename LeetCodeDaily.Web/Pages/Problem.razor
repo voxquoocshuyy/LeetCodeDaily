@@ -1,0 +1,57 @@
+@page "/problem"
+@using LeetCodeDaily.Web.Models
+@inject IHttpClientFactory HttpClientFactory
+@inject ILogger<Problem> Logger
+
+<h3>Daily Problem</h3>
+
+@if (_problem == null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <div class="card">
+        <div class="card-header">
+            <h4>@_problem.Title</h4>
+            <span class="badge bg-@GetDifficultyColor(_problem.Difficulty)">@_problem.Difficulty</span>
+        </div>
+        <div class="card-body">
+            <div class="mb-3">
+                <h5>Description</h5>
+                <div class="problem-content">
+                    @((MarkupString)_problem.Content)
+                </div>
+            </div>
+            <div class="mb-3">
+                <h5>Example Test Cases</h5>
+                <pre><code>@_problem.ExampleTestcases</code></pre>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private LeetCodeProblem? _problem;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            var client = HttpClientFactory.CreateClient();
+            _problem = await client.GetFromJsonAsync<LeetCodeProblem>("api/problem/daily");
+        }
+        catch (Exception ex)
+        {
+            Logger.LogError(ex, "Error loading problem");
+        }
+    }
+
+    private string GetDifficultyColor(string difficulty) => difficulty.ToLower() switch
+    {
+        "easy" => "success",
+        "medium" => "warning",
+        "hard" => "danger",
+        _ => "secondary"
+    };
+} 
