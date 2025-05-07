@@ -1,0 +1,40 @@
+{
+  "id": "3627",
+  "titleSlug": "find-minimum-time-to-reach-last-room-i",
+  "title": "Find Minimum Time to Reach Last Room I",
+  "translatedTitle": null,
+  "questionFrontendId": "3341",
+  "paidOnly": false,
+  "difficulty": "Medium",
+  "topicTags": [
+    {
+      "name": "Array",
+      "slug": "array",
+      "nameTranslated": null
+    },
+    {
+      "name": "Graph",
+      "slug": "graph",
+      "nameTranslated": null
+    },
+    {
+      "name": "Heap (Priority Queue)",
+      "slug": "heap-priority-queue",
+      "nameTranslated": null
+    },
+    {
+      "name": "Matrix",
+      "slug": "matrix",
+      "nameTranslated": null
+    },
+    {
+      "name": "Shortest Path",
+      "slug": "shortest-path",
+      "nameTranslated": null
+    }
+  ],
+  "status": null,
+  "isInMyFavorites": false,
+  "acRate": 41.117844768294425,
+  "frequency": null
+}

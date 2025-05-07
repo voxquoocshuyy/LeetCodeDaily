@@ -10,6 +10,7 @@ namespace LeetCodeDaily.Core
         private static readonly HttpClient Client = new HttpClient();
         private static readonly string GraphqlEndpoint = "https://leetcode.com/graphql/";
         private static readonly string SolutionsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Solutions");
+        private static readonly string SolutionsPathSave = "D:\\source\\Daily\\LeetCodeDaily.Core\\Solutions";
 
         public static async Task Main(string[] args)
         {
@@ -19,12 +20,23 @@ namespace LeetCodeDaily.Core
                 var dailyProblem = await FetchDailyProblem();
                 if (dailyProblem != null)
                 {
-                    // Save problem details to JSON file
-                    var problemDir = Path.Combine(SolutionsPath,
-                        $"{dailyProblem["questionFrontendId"]}_{dailyProblem["titleSlug"]}");
+                    // Create directory with problem code and name
+                    var problemDir = Path.Combine(SolutionsPathSave,
+                        $"{dailyProblem["questionFrontendId"]}_{dailyProblem["title"].ToString().Replace(" ", "")}");
                     Directory.CreateDirectory(problemDir);
 
-                    var jsonPath = Path.Combine(problemDir, "problem.json");
+                    // Save problem details to JSON file in the problem directory
+                    var jsonPathSave = Path.Combine(problemDir, "problem.json");
+                    File.WriteAllText(jsonPathSave, dailyProblem.ToString(Formatting.Indented));
+                    Console.WriteLine($"Problem details saved to: {jsonPathSave}");
+
+                    // Copy the problem to the Solutions directory
+                    var solutionDir = Path.Combine(SolutionsPath,
+                        $"{dailyProblem["questionFrontendId"]}_{dailyProblem["title"].ToString().Replace(" ", "")}");
+                    Directory.CreateDirectory(solutionDir);
+
+                    // Copy the template solution file
+                    var jsonPath = Path.Combine(solutionDir, "problem.json");
                     File.WriteAllText(jsonPath, dailyProblem.ToString(Formatting.Indented));
                     Console.WriteLine($"Problem details saved to: {jsonPath}");
                 }
