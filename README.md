@@ -143,4 +143,83 @@ docker run -p 8080:80 leetcodedaily
 5. Create a Pull Request
 
 ## License
-This project is licensed under the MIT License - see the LICENSE file for details. 
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+# Elasticsearch và Kibana Setup
+
+## Yêu cầu
+- Docker Desktop đã được cài đặt
+- Docker Compose đã được cài đặt
+
+## Cách chạy
+
+1. Khởi động các container:
+```bash
+docker-compose up -d
+```
+
+2. Kiểm tra trạng thái các container:
+```bash
+docker-compose ps
+```
+
+3. Kiểm tra logs:
+```bash
+docker-compose logs -f
+```
+
+4. Truy cập các service:
+- Elasticsearch: http://localhost:9200
+- Kibana: http://localhost:5601
+
+## Cấu hình
+
+### Elasticsearch
+- Port: 9200 (HTTP), 9300 (Transport)
+- Memory: 512MB (có thể điều chỉnh trong docker-compose.yml)
+- Data được lưu trong volume: elasticsearch-data
+
+### Kibana
+- Port: 5601
+- Kết nối tự động với Elasticsearch
+
+## Dừng và xóa
+
+1. Dừng các container:
+```bash
+docker-compose down
+```
+
+2. Xóa cả data:
+```bash
+docker-compose down -v
+```
+
+## Troubleshooting
+
+1. Nếu Elasticsearch không khởi động được:
+```bash
+docker-compose logs elasticsearch
+```
+
+2. Nếu Kibana không kết nối được với Elasticsearch:
+```bash
+docker-compose logs kibana
+```
+
+3. Kiểm tra memory:
+```bash
+docker stats
+```
+
+## Backup và Restore
+
+1. Backup data:
+```bash
+docker run --rm --volumes-from elasticsearch -v $(pwd):/backup alpine tar cvf /backup/elasticsearch-backup.tar /usr/share/elasticsearch/data
+```
+
+2. Restore data:
+```bash
+docker run --rm --volumes-from elasticsearch -v $(pwd):/backup alpine sh -c "cd /usr/share/elasticsearch/data && tar xvf /backup/elasticsearch-backup.tar"
+``` 

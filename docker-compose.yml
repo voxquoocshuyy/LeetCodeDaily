@@ -5,6 +5,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    container_name: daily-leetcodedaily
     ports:
       - "8080:80"
     volumes:
@@ -12,4 +13,55 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:80
-    restart: unless-stopped 
+    restart: unless-stopped
+
+  elasticsearch:
+    image: elasticsearch:7.17.0
+    container_name: daily-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - xpack.security.enabled=false
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    networks:
+      - elk
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9200"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  kibana:
+    image: kibana:7.17.0
+    container_name: daily-kibana
+    environment:
+      - ELASTICSEARCH_HOSTS=http://daily-elasticsearch:9200
+      - ELASTICSEARCH_URL=http://daily-elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=
+      - ELASTICSEARCH_PASSWORD=
+      - XPACK_SECURITY_ENABLED=false
+      - XPACK_MONITORING_UI_CONTAINER_ELASTICSEARCH_ENABLED=true
+    ports:
+      - "5601:5601"
+    depends_on:
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - elk
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5601"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+volumes:
+  elasticsearch-data:
+    driver: local
+
+networks:
+  elk:
+    driver: bridge 

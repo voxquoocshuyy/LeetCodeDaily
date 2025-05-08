@@ -1,11 +1,28 @@
 using LeetCodeDaily.Web.Jobs;
+using LeetCodeDaily.Web.Middleware;
 using LeetCodeDaily.Web.Services;
 using Microsoft.AspNetCore.Components;
 using Quartz;
 using Quartz.Impl;
 using Quartz.Spi;
+using Serilog;
+using Serilog.Events;
+using Serilog.Sinks.Elasticsearch;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Configure Serilog
+builder.Host.UseSerilog((context, services, configuration) => configuration
+    .ReadFrom.Configuration(context.Configuration)
+    .ReadFrom.Services(services)
+    .Enrich.FromLogContext()
+    .WriteTo.Console()
+    .WriteTo.Elasticsearch(new Serilog.Sinks.Elasticsearch.ElasticsearchSinkOptions(new Uri("http://localhost:9200"))
+    {
+        AutoRegisterTemplate = true,
+        AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv7,
+        IndexFormat = $"leetcode-daily-{DateTime.UtcNow:yyyy.MM}"
+    }));
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -48,6 +65,9 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
+
+// Add request ID middleware
+app.UseMiddleware<RequestIdMiddleware>();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();

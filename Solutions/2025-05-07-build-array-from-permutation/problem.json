@@ -1,0 +1,19 @@
+{
+  "title": "Build Array from Permutation",
+  "titleSlug": "build-array-from-permutation",
+  "questionFrontendId": "",
+  "translatedTitle": "",
+  "difficulty": "Easy",
+  "content": "",
+  "description": "Given a zero-based permutation nums (0-indexed), build an array ans of the same length where ans[i] = nums[nums[i]] for each 0 \u003C= i \u003C nums.length and return it.",
+  "example": "Input: nums = [0,2,1,5,3,4]\nOutput: [0,1,2,4,5,3]",
+  "constraints": "1 \u003C= nums.length \u003C= 1000\n0 \u003C= nums[i] \u003C nums.length\nThe elements in nums are distinct.",
+  "solution": "public int[] BuildArray(int[] nums) {\n    int[] ans = new int[nums.Length];\n    for (int i = 0; i \u003C nums.Length; i\u002B\u002B) {\n        ans[i] = nums[nums[i]];\n    }\n    return ans;\n}",
+  "explanation": "",
+  "exampleTestcases": "",
+  "categoryTitle": "Array",
+  "topicTags": [],
+  "acRate": 0,
+  "frequency": 0,
+  "status": ""
+}
