@@ -16,12 +16,24 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
     .ReadFrom.Configuration(context.Configuration)
     .ReadFrom.Services(services)
     .Enrich.FromLogContext()
+    .Enrich.WithMachineName()
+    .Enrich.WithThreadId()
     .WriteTo.Console()
-    .WriteTo.Elasticsearch(new Serilog.Sinks.Elasticsearch.ElasticsearchSinkOptions(new Uri("http://localhost:9200"))
+    .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("http://localhost:9200"))
     {
         AutoRegisterTemplate = true,
         AutoRegisterTemplateVersion = AutoRegisterTemplateVersion.ESv7,
-        IndexFormat = $"leetcode-daily-{DateTime.UtcNow:yyyy.MM}"
+        IndexFormat = $"leetcode-daily-{DateTime.UtcNow:yyyy.MM.dd}",
+        NumberOfShards = 2,
+        NumberOfReplicas = 1,
+        CustomFormatter = new Serilog.Formatting.Elasticsearch.ElasticsearchJsonFormatter(),
+        EmitEventFailure = EmitEventFailureHandling.WriteToSelfLog |
+                           EmitEventFailureHandling.WriteToFailureSink |
+                           EmitEventFailureHandling.RaiseCallback,
+        FailureCallback = e =>
+        {
+            Console.WriteLine("Unable to submit event " + e.MessageTemplate);
+        }
     }));
 
 // Add services to the container.
@@ -75,5 +87,8 @@ app.UseRouting();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
+
+// Test logging
+Log.Information("Application starting up...");
 
 app.Run();
