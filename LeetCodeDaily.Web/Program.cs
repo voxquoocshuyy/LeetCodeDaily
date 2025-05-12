@@ -32,9 +32,14 @@ builder.Host.UseSerilog((context, services, configuration) => configuration
                            EmitEventFailureHandling.RaiseCallback,
         FailureCallback = e =>
         {
-            Console.WriteLine("Unable to submit event " + e.MessageTemplate);
-        }
-    }));
+            Console.WriteLine($"Unable to submit event to Elasticsearch: {e.MessageTemplate}");
+            Console.WriteLine($"Exception: {e.Exception}");
+        },
+        RegisterTemplateFailure = RegisterTemplateRecovery.FailSink,
+        DeadLetterIndexName = "deadletter-{0:yyyy.MM}",
+        MinimumLogEventLevel = LogEventLevel.Information
+    })
+    .WriteTo.File("logs/serilog.txt", rollingInterval: RollingInterval.Day)); // Add file logging for debugging
 
 // Add services to the container.
 builder.Services.AddRazorPages();
@@ -90,5 +95,15 @@ app.MapFallbackToPage("/_Host");
 
 // Test logging
 Log.Information("Application starting up...");
+Log.Information("Testing Elasticsearch connection...");
+Log.Information("This is a test log message at {Timestamp}", DateTime.UtcNow);
+Log.Information("Another test message with structured data: {Property1} {Property2}", "Value1", "Value2");
+
+// Add a test endpoint to generate logs
+app.MapGet("/test-logging", () =>
+{
+    Log.Information("Test endpoint called at {Timestamp}", DateTime.UtcNow);
+    return "Logging test completed";
+});
 
 app.Run();

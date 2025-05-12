@@ -61,6 +61,8 @@ sequenceDiagram
 - **Storage**: File System (JSON)
 - **API Integration**: LeetCode GraphQL API
 - **Error Handling**: Polly (Retry Policy)
+- **Logging**: Serilog with Elasticsearch sink
+- **Monitoring**: Elasticsearch & Kibana
 
 ## Project Structure
 ```
@@ -222,4 +224,61 @@ docker run --rm --volumes-from elasticsearch -v $(pwd):/backup alpine tar cvf /b
 2. Restore data:
 ```bash
 docker run --rm --volumes-from elasticsearch -v $(pwd):/backup alpine sh -c "cd /usr/share/elasticsearch/data && tar xvf /backup/elasticsearch-backup.tar"
-``` 
+```
+
+## Logging Configuration
+
+### Serilog Setup
+The application uses Serilog for structured logging with the following sinks:
+- Elasticsearch sink for centralized log storage
+- Console sink for development debugging
+- File sink for local log storage
+
+### Logging Features
+- Structured logging with JSON format
+- Correlation IDs for request tracking
+- Log levels (Information, Warning, Error, Debug)
+- Exception details with stack traces
+- Request/Response logging
+- Performance metrics
+
+### Elasticsearch & Kibana Integration
+The application sends logs to Elasticsearch which can be visualized in Kibana:
+
+1. **Elasticsearch Configuration**:
+   - Host: http://localhost:9200
+   - Index pattern: leetcodedaily-{yyyy.MM.dd}
+   - Log retention: 30 days
+
+2. **Kibana Dashboard**:
+   - Access URL: http://localhost:5601
+   - Default index pattern: leetcodedaily-*
+   - Pre-configured dashboards for:
+     - Application errors
+     - Performance metrics
+     - Request patterns
+     - User activity
+
+3. **Log Fields**:
+   - Timestamp
+   - Log Level
+   - Message
+   - Exception details
+   - Request path
+   - User information
+   - Performance metrics
+   - Correlation ID
+
+### Viewing Logs
+1. Access Kibana at http://localhost:5601
+2. Navigate to "Discover" section
+3. Select the "leetcodedaily-*" index pattern
+4. Use the search bar to filter logs
+5. Create visualizations and dashboards as needed
+
+### Logging Best Practices
+- Use appropriate log levels
+- Include relevant context in log messages
+- Avoid logging sensitive information
+- Use structured logging for better analysis
+- Monitor log volume and retention 

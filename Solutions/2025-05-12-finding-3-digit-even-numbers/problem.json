@@ -1,0 +1,40 @@
+{
+  "title": "Finding 3-Digit Even Numbers",
+  "titleSlug": "finding-3-digit-even-numbers",
+  "questionFrontendId": "2094",
+  "translatedTitle": "",
+  "difficulty": "Easy",
+  "content": "\u003Cp\u003EYou are given an integer array \u003Ccode\u003Edigits\u003C/code\u003E, where each element is a digit. The array may contain duplicates.\u003C/p\u003E\n\n\u003Cp\u003EYou need to find \u003Cstrong\u003Eall\u003C/strong\u003E the \u003Cstrong\u003Eunique\u003C/strong\u003E integers that follow the given requirements:\u003C/p\u003E\n\n\u003Cul\u003E\n\t\u003Cli\u003EThe integer consists of the \u003Cstrong\u003Econcatenation\u003C/strong\u003E of \u003Cstrong\u003Ethree\u003C/strong\u003E elements from \u003Ccode\u003Edigits\u003C/code\u003E in \u003Cstrong\u003Eany\u003C/strong\u003E arbitrary order.\u003C/li\u003E\n\t\u003Cli\u003EThe integer does not have \u003Cstrong\u003Eleading zeros\u003C/strong\u003E.\u003C/li\u003E\n\t\u003Cli\u003EThe integer is \u003Cstrong\u003Eeven\u003C/strong\u003E.\u003C/li\u003E\n\u003C/ul\u003E\n\n\u003Cp\u003EFor example, if the given \u003Ccode\u003Edigits\u003C/code\u003E were \u003Ccode\u003E[1, 2, 3]\u003C/code\u003E, integers \u003Ccode\u003E132\u003C/code\u003E and \u003Ccode\u003E312\u003C/code\u003E follow the requirements.\u003C/p\u003E\n\n\u003Cp\u003EReturn \u003Cem\u003Ea \u003Cstrong\u003Esorted\u003C/strong\u003E array of the unique integers.\u003C/em\u003E\u003C/p\u003E\n\n\u003Cp\u003E\u0026nbsp;\u003C/p\u003E\n\u003Cp\u003E\u003Cstrong class=\u0022example\u0022\u003EExample 1:\u003C/strong\u003E\u003C/p\u003E\n\n\u003Cpre\u003E\n\u003Cstrong\u003EInput:\u003C/strong\u003E digits = [2,1,3,0]\n\u003Cstrong\u003EOutput:\u003C/strong\u003E [102,120,130,132,210,230,302,310,312,320]\n\u003Cstrong\u003EExplanation:\u003C/strong\u003E All the possible integers that follow the requirements are in the output array. \nNotice that there are no \u003Cstrong\u003Eodd\u003C/strong\u003E integers or integers with \u003Cstrong\u003Eleading zeros\u003C/strong\u003E.\n\u003C/pre\u003E\n\n\u003Cp\u003E\u003Cstrong class=\u0022example\u0022\u003EExample 2:\u003C/strong\u003E\u003C/p\u003E\n\n\u003Cpre\u003E\n\u003Cstrong\u003EInput:\u003C/strong\u003E digits = [2,2,8,8,2]\n\u003Cstrong\u003EOutput:\u003C/strong\u003E [222,228,282,288,822,828,882]\n\u003Cstrong\u003EExplanation:\u003C/strong\u003E The same digit can be used as many times as it appears in digits. \nIn this example, the digit 8 is used twice each time in 288, 828, and 882. \n\u003C/pre\u003E\n\n\u003Cp\u003E\u003Cstrong class=\u0022example\u0022\u003EExample 3:\u003C/strong\u003E\u003C/p\u003E\n\n\u003Cpre\u003E\n\u003Cstrong\u003EInput:\u003C/strong\u003E digits = [3,7,5]\n\u003Cstrong\u003EOutput:\u003C/strong\u003E []\n\u003Cstrong\u003EExplanation:\u003C/strong\u003E No \u003Cstrong\u003Eeven\u003C/strong\u003E integers can be formed using the given digits.\n\u003C/pre\u003E\n\n\u003Cp\u003E\u0026nbsp;\u003C/p\u003E\n\u003Cp\u003E\u003Cstrong\u003EConstraints:\u003C/strong\u003E\u003C/p\u003E\n\n\u003Cul\u003E\n\t\u003Cli\u003E\u003Ccode\u003E3 \u0026lt;= digits.length \u0026lt;= 100\u003C/code\u003E\u003C/li\u003E\n\t\u003Cli\u003E\u003Ccode\u003E0 \u0026lt;= digits[i] \u0026lt;= 9\u003C/code\u003E\u003C/li\u003E\n\u003C/ul\u003E\n",
+  "description": "\u003Cp\u003EYou are given an integer array \u003Ccode\u003Edigits\u003C/code\u003E, where each element is a digit. The array may contain duplicates.\u003C/p\u003E\n\n\u003Cp\u003EYou need to find \u003Cstrong\u003Eall\u003C/strong\u003E the \u003Cstrong\u003Eunique\u003C/strong\u003E integers that follow the given requirements:\u003C/p\u003E\n\n\u003Cul\u003E\n\t\u003Cli\u003EThe integer consists of the \u003Cstrong\u003Econcatenation\u003C/strong\u003E of \u003Cstrong\u003Ethree\u003C/strong\u003E elements from \u003Ccode\u003Edigits\u003C/code\u003E in \u003Cstrong\u003Eany\u003C/strong\u003E arbitrary order.\u003C/li\u003E\n\t\u003Cli\u003EThe integer does not have \u003Cstrong\u003Eleading zeros\u003C/strong\u003E.\u003C/li\u003E\n\t\u003Cli\u003EThe integer is \u003Cstrong\u003Eeven\u003C/strong\u003E.\u003C/li\u003E\n\u003C/ul\u003E\n\n\u003Cp\u003EFor example, if the given \u003Ccode\u003Edigits\u003C/code\u003E were \u003Ccode\u003E[1, 2, 3]\u003C/code\u003E, integers \u003Ccode\u003E132\u003C/code\u003E and \u003Ccode\u003E312\u003C/code\u003E follow the requirements.\u003C/p\u003E\n\n\u003Cp\u003EReturn \u003Cem\u003Ea \u003Cstrong\u003Esorted\u003C/strong\u003E array of the unique integers.\u003C/em\u003E\u003C/p\u003E\n\n\u003Cp\u003E\u0026nbsp;\u003C/p\u003E\n\u003Cp\u003E\u003Cstrong class=\u0022example\u0022\u003EExample 1:\u003C/strong\u003E\u003C/p\u003E\n\n\u003Cpre\u003E\n\u003Cstrong\u003EInput:\u003C/strong\u003E digits = [2,1,3,0]\n\u003Cstrong\u003EOutput:\u003C/strong\u003E [102,120,130,132,210,230,302,310,312,320]\n\u003Cstrong\u003EExplanation:\u003C/strong\u003E All the possible integers that follow the requirements are in the output array. \nNotice that there are no \u003Cstrong\u003Eodd\u003C/strong\u003E integers or integers with \u003Cstrong\u003Eleading zeros\u003C/strong\u003E.\n\u003C/pre\u003E\n\n\u003Cp\u003E\u003Cstrong class=\u0022example\u0022\u003EExample 2:\u003C/strong\u003E\u003C/p\u003E\n\n\u003Cpre\u003E\n\u003Cstrong\u003EInput:\u003C/strong\u003E digits = [2,2,8,8,2]\n\u003Cstrong\u003EOutput:\u003C/strong\u003E [222,228,282,288,822,828,882]\n\u003Cstrong\u003EExplanation:\u003C/strong\u003E The same digit can be used as many times as it appears in digits. \nIn this example, the digit 8 is used twice each time in 288, 828, and 882. \n\u003C/pre\u003E\n\n\u003Cp\u003E\u003Cstrong class=\u0022example\u0022\u003EExample 3:\u003C/strong\u003E\u003C/p\u003E\n\n\u003Cpre\u003E\n\u003Cstrong\u003EInput:\u003C/strong\u003E digits = [3,7,5]\n\u003Cstrong\u003EOutput:\u003C/strong\u003E []\n\u003Cstrong\u003EExplanation:\u003C/strong\u003E No \u003Cstrong\u003Eeven\u003C/strong\u003E integers can be formed using the given digits.\n\u003C/pre\u003E\n\n\u003Cp\u003E\u0026nbsp;\u003C/p\u003E\n\u003Cp\u003E\u003Cstrong\u003EConstraints:\u003C/strong\u003E\u003C/p\u003E\n\n\u003Cul\u003E\n\t\u003Cli\u003E\u003Ccode\u003E3 \u0026lt;= digits.length \u0026lt;= 100\u003C/code\u003E\u003C/li\u003E\n\t\u003Cli\u003E\u003Ccode\u003E0 \u0026lt;= digits[i] \u0026lt;= 9\u003C/code\u003E\u003C/li\u003E\n\u003C/ul\u003E\n",
+  "example": "[2,1,3,0]\n[2,2,8,8,2]\n[3,7,5]",
+  "constraints": "",
+  "solution": "",
+  "explanation": "",
+  "exampleTestcases": "[2,1,3,0]\n[2,2,8,8,2]\n[3,7,5]",
+  "categoryTitle": "Algorithms",
+  "topicTags": [
+    {
+      "name": "Array",
+      "id": "",
+      "slug": "array"
+    },
+    {
+      "name": "Hash Table",
+      "id": "",
+      "slug": "hash-table"
+    },
+    {
+      "name": "Sorting",
+      "id": "",
+      "slug": "sorting"
+    },
+    {
+      "name": "Enumeration",
+      "id": "",
+      "slug": "enumeration"
+    }
+  ],
+  "acRate": 0,
+  "frequency": 0,
+  "status": ""
+}
