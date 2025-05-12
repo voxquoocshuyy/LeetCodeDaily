@@ -86,6 +86,9 @@ if (!app.Environment.IsDevelopment())
 // Add request ID middleware
 app.UseMiddleware<RequestIdMiddleware>();
 
+// Add request logging middleware
+app.UseMiddleware<RequestLoggingMiddleware>();
+
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseRouting();
